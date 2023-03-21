@@ -1,7 +1,7 @@
 # CS128-Honors-Project
 Group Name: 
 
-Group member names and NetIDs: Navomi Byju (nbyju2), Daniel Andrasz (da22),
+Group member names and NetIDs: Navomi Byju (nbyju2), Daniel Andrasz (da22), Akhil Bharanidhar (akhilnb2)
 
 Project Introduction: We are planning to implement a simple chat server/client. The final product should work on two separate machines.
 
