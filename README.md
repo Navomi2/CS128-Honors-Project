@@ -15,3 +15,7 @@ Possible Challenges:
 
 References: 
 - https://www.section.io/engineering-education/how-to-build-a-client-server-application-using-rust/
+- https://github.com/EstebanBorai/rust-cli-chat
+- https://github.com/jean553/rust-chat-server/blob/master/rust-chat-server/src/main.rs
+- https://book.async.rs/tutorial/index.html
+

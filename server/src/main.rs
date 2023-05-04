@@ -1,16 +1,14 @@
 use std::io;
-use std::time;
 use std ::net::{TcpListener, TcpStream};
 use std::io::{Read, Write};
 use std::thread;
-use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 
 fn main() -> io::Result<()> {
     const CONNECTION: &str = "0.0.0.0:4695";
     let receiver_listener = TcpListener::bind(CONNECTION).expect("Failed to connect with sender");
     
-    let mut clients = Arc::new(Mutex::new(Vec::new()));
+    let clients = Arc::new(Mutex::new(Vec::new()));
 
     for stream in receiver_listener.incoming() {
         let mut stream = stream.unwrap();
@@ -23,7 +21,7 @@ fn main() -> io::Result<()> {
 
         let mut thread_vec: Vec<thread::JoinHandle<()>> = Vec::new();
         let handle = thread::spawn(move || {
-            handle_sender(&mut stream, &clients_clone);
+            handle_sender(&mut stream, &clients_clone).expect("Failed to write message");
         });
         thread_vec.push(handle);
     }
