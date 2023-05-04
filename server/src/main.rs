@@ -46,6 +46,9 @@ fn handle_sender(stream: &mut TcpStream, clients: &Arc<Mutex<Vec<TcpStream>>>) -
                 // Send the message to all connected clients
                 let mut clients = clients.lock().unwrap();
                 for client in clients.iter_mut() {
+                    if client.peer_addr().unwrap() == stream.peer_addr().unwrap() {
+                        continue;
+                    }
                     client.write_all(message).unwrap();
                 }
             }
