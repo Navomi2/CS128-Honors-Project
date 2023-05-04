@@ -5,7 +5,7 @@ use std::io;
 
 fn main() {
     //port number
-    const PORT: &str = "0.0.0.0:4695";
+    const PORT: &str = "127.0.0.1:4695";
     //wasn't sure what an average message size is, this number can be changed later
     const MSG_SIZE: usize = 1000;
 
