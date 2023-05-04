@@ -3,9 +3,9 @@ use std::net::{TcpListener,TcpStream};
 //use std::thread;
 use std::io;
 
-fn main() -> io::Result<( )> {
+fn main() {
     //port number
-    const PORT: &str = "127.0.0.1:4695";
+    const PORT: &str = "0.0.0.0:4695";
     //wasn't sure what an average message size is, this number can be changed later
     const MSG_SIZE: usize = 1000;
 
@@ -25,7 +25,7 @@ fn main() -> io::Result<( )> {
                 // Send the message to the server
                 stream.write_all(&input).expect("Failed to send");
             }
-            Err(_) => break,
+            Err(_) => (),
         }
 
         // reading messages from the TCP stream
@@ -35,19 +35,17 @@ fn main() -> io::Result<( )> {
                 let msg_bytes: Vec<u8> = input.into_iter().take_while(|&x| x != 0).collect::<Vec<_>>();
                 tx.send(msg_bytes).expect("Failed to send");
             }
-            Err(_) => break,
+            Err(_) => (),
+        }
+
+        // check if there is any message from the server and write it to the terminal
+        match rx.try_recv() {
+            Ok(msg) => {
+                println!("Received message from server: {:?}", msg);
+            }
+            Err(_) => (),
         }
     }
-
-    // check if there is any message from the server and write it to the terminal
-    match rx.try_recv() {
-        Ok(msg) => {
-            println!("Received message from server: {:?}", msg);
-        }
-        Err(_) => (),
-    }
-
-    Ok(())
 }
 /* 
 let mut stream_clone = stream.try_clone().expect("Failed to clone stream");

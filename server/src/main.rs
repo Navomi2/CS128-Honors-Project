@@ -3,11 +3,12 @@ use std::time;
 use std ::net::{TcpListener, TcpStream};
 use std::io::{Read, Write};
 use std::thread;
-
+//127.0.0.1
 fn main() -> io::Result<()> {
-    const CONNECTION: &str = "127.0.0.1:4695";
+    const CONNECTION: &str = "0.0.0.0:4695";
     let receiver_listener = TcpListener::bind(CONNECTION).expect("Failed to connect with sender");
     let mut thread_vec: Vec<thread::JoinHandle<()>> = Vec::new();
+
     for stream in receiver_listener.incoming() {
         let stream = stream.expect("failure");
         let handle = thread::spawn(move || {
