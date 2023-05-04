@@ -5,7 +5,7 @@ use std::thread;
 use std::sync::{Arc, Mutex};
 
 fn main() -> io::Result<()> {
-    const CONNECTION: &str = "0.0.0.0:4695";
+    const CONNECTION: &str = "127.0.0.1:4695";
     let receiver_listener = TcpListener::bind(CONNECTION).expect("Failed to connect with sender");
     
     let clients = Arc::new(Mutex::new(Vec::new()));
@@ -26,11 +26,6 @@ fn main() -> io::Result<()> {
         thread_vec.push(handle);
     }
 
-/*
-    for handle in thread_vec {
-        handle.join().unwrap();
-    }
-*/
     Ok(())
 }
 
