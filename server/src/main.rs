@@ -5,20 +5,25 @@ use std::thread;
 use std::sync::{Arc, Mutex};
 
 fn main() -> io::Result<()> {
+    // connect to port on localhost
     const CONNECTION: &str = "127.0.0.1:4695";
     let receiver_listener = TcpListener::bind(CONNECTION).expect("Failed to connect with sender");
     
+    // vector of clients
     let clients = Arc::new(Mutex::new(Vec::new()));
 
     for stream in receiver_listener.incoming() {
         let mut stream = stream.unwrap();
 
+        // log connections
         let client_address = stream.peer_addr().expect("Failed to get client address");
         println!("Accepted connection from: {}", client_address);
 
+        // clone clients vector
         let clients_clone = clients.clone();
         clients_clone.lock().unwrap().push(stream.try_clone().unwrap());
 
+        // spawn a thread for each client
         let mut thread_vec: Vec<thread::JoinHandle<()>> = Vec::new();
         let handle = thread::spawn(move || {
             handle_sender(&mut stream, &clients_clone).expect("Failed to write message");
@@ -41,6 +46,7 @@ fn handle_sender(stream: &mut TcpStream, clients: &Arc<Mutex<Vec<TcpStream>>>) -
                 // Send the message to all connected clients
                 let mut clients = clients.lock().unwrap();
                 for client in clients.iter_mut() {
+                    // if client is the sender, don't send message to itself
                     if client.peer_addr().unwrap() == stream.peer_addr().unwrap() {
                         continue;
                     }

@@ -20,12 +20,16 @@ fn main() {
         // reading messages from the TCP stream
         let mut msg = vec![0; MSG_SIZE];
         match stream.read(&mut msg) {
+            // if there is a message, print it
             Ok(_) => {
+                // convert bytes to string
                 let msg_bytes: Vec<u8> = msg.into_iter().take_while(|&x| x != 0).collect::<Vec<_>>();
                 let msg_str = String::from_utf8(msg_bytes).expect("Invalid utf8 message");
                 println!("Received message from server: {:?}", msg_str);
             }
+            // if there is no message, continue
             Err(ref err) if err.kind() == io::ErrorKind::WouldBlock => (),
+            // if there is an error, break
             Err(_) => {
                 println!("Connection with server was severed");
                 break;
@@ -34,11 +38,10 @@ fn main() {
     });
 
 
-    // while main thread continues accepting input
-    // letting background thread handle sending it to server
+    // main thread sends messages to server
     println!("Write your message: ");
     loop {
-        
+        // receive input and convert to bytes
         let mut input = String::new();
         stdin().read_line(&mut input).expect("Could not read input");
         let input = input.trim().as_bytes().to_vec();
