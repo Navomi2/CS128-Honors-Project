@@ -16,22 +16,14 @@ fn main() -> io::Result<( )> {
     let (tx, rx) = std::sync::mpsc::channel::<Vec<u8>>();
     // read messages from the terminal and send them to the server
     loop {
-        // check if there is any message from the server and write it to the terminal
-        match rx.try_recv() {
-            Ok(msg) => {
-                println!("Received message from server: {:?}", msg);
-            }
-            Err(_) => (),
-        }
-
         // check if there is any message from the user and send it to the server
         let mut input = String::new();
         println!("Enter your message: ");
         match stdin().read_line(&mut input) {
             Ok(_) => {
                 let input = input.trim().as_bytes().to_vec();
-                // Send the message to the background thread for sending to the server
-                tx.send(input).expect("Failed to send");
+                // Send the message to the server
+                stream.write_all(&input).expect("Failed to send");
             }
             Err(_) => break,
         }
@@ -45,6 +37,14 @@ fn main() -> io::Result<( )> {
             }
             Err(_) => break,
         }
+    }
+
+    // check if there is any message from the server and write it to the terminal
+    match rx.try_recv() {
+        Ok(msg) => {
+            println!("Received message from server: {:?}", msg);
+        }
+        Err(_) => (),
     }
 
     Ok(())
